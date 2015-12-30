@@ -143,6 +143,9 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="rWH-yh-Wv7"/>
+                    <connections>
+                        <segue destination="p8n-Vs-hGm" kind="presentation" id="UXN-XJ-xFi"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="rGx-nq-V1k" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -159,12 +162,46 @@
                     <view key="view" contentMode="scaleToFill" id="Atu-m9-3Qf">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Where are you studying                today?" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qZb-3v-foQ">
+                                <rect key="frame" x="208" y="53" width="238" height="142"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue-Medium" family="Helvetica Neue" pointSize="25"/>
+                                <color key="textColor" red="0.018145849870816345" green="0.24628265463262797" blue="0.37191611842105265" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Vq9-Ve-laD">
+                                <rect key="frame" x="526" y="28" width="54" height="30"/>
+                                <state key="normal" title="Cancel">
+                                    <color key="titleColor" red="0.018145849870000001" green="0.24628265460000001" blue="0.3719161184" alpha="1" colorSpace="calibratedRGB"/>
+                                </state>
+                            </button>
+                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="S9s-qK-KEn">
+                                <rect key="frame" x="0.0" y="203" width="600" height="302"/>
+                                <subviews>
+                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Enter you location here" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="VXC-Os-Cha">
+                                        <rect key="frame" x="8" y="8" width="584" height="35"/>
+                                        <color key="backgroundColor" red="0.018145849870000001" green="0.24628265460000001" blue="0.3719161184" alpha="1" colorSpace="calibratedRGB"/>
+                                        <color key="textColor" red="0.90196079019999997" green="0.90196079019999997" blue="0.90196079019999997" alpha="1" colorSpace="calibratedRGB"/>
+                                        <fontDescription key="fontDescription" name="HelveticaNeue-Medium" family="Helvetica Neue" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits"/>
+                                    </textField>
+                                </subviews>
+                                <color key="backgroundColor" red="0.018145849870000001" green="0.24628265460000001" blue="0.3719161184" alpha="1" colorSpace="calibratedRGB"/>
+                            </view>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2nB-Cl-rMI">
+                                <rect key="frame" x="161" y="513" width="278" height="67"/>
+                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue-Medium" family="Helvetica Neue" pointSize="22"/>
+                                <state key="normal" title="Find on the Map"/>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" red="0.90196079019999997" green="0.90196079019999997" blue="0.90196079019999997" alpha="1" colorSpace="calibratedRGB"/>
                     </view>
+                    <navigationItem key="navigationItem" id="buP-hy-iq4"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="67w-Ih-eES" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3507" y="629"/>
+            <point key="canvasLocation" x="3618" y="646"/>
         </scene>
         <!--Table View Controller-->
         <scene sceneID="qz2-7w-qQG">
@@ -210,6 +247,9 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" id="Q4H-ZR-9OU"/>
+                    <connections>
+                        <segue destination="p8n-Vs-hGm" kind="presentation" id="hJk-MT-6FF"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="fHM-Mk-ePU" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -260,4 +300,7 @@
         <image name="pin" width="32" height="32"/>
         <image name="udacity" width="256" height="256"/>
     </resources>
+    <inferredMetricsTieBreakers>
+        <segue reference="UXN-XJ-xFi"/>
+    </inferredMetricsTieBreakers>
 </document>
