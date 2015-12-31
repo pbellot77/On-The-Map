@@ -126,94 +126,80 @@ class UdacityClient: NSObject {
         return task
     }
     
-    //Mark -- Delete
+    //MARK: -- Delete
     func taskForDeleteMethod(method: String, completionHandler: (result: AnyObject!, error: NSError?) -> Void) -> NSURLSessionDataTask{
         
-        let urlString = UdacityClient.Constants.BaseURLSecure + method
+        let urlString = Constants.UdacityBaseURL + method
         let url = NSURL(string: urlString)
         let request = NSMutableURLRequest(URL: url!)
-        
         request.HTTPMethod = "DELETE"
         var xsrfCookie: NSHTTPCookie? = nil
         let sharedCookieStorage = NSHTTPCookieStorage.sharedHTTPCookieStorage()
         
-        for cookie in sharedCookieStorage.cookies! as [NSHTTPCookie]{
-            
-            if(cookie.name == "XSRF-Token"){
-                xsrfCookie = cookie
-            }
+        for cookie in sharedCookieStorage.cookies as [NSHTTPCookie]!{
+            if cookie.name == "XSRF-Token"{ xsrfCookie = cookie }
         }
-        if let xsrfCookie = xsrfCookie{
+        if let xsrfCookie = xsrfCookie {
             request.setValue(xsrfCookie.value, forHTTPHeaderField: "X-XSRF-TOKEN")
         }
         
-        let task = session.dataTaskWithRequest(request){ data, response, downloadError in
+        let task = session.dataTaskWithRequest(request){ data, response, error in
             
-            if let error = downloadError{
-                let newError = UdacityClient.errorForData(data, response: response, error: error)
-                completionHandler(result: nil, error: newError)
-            }else{
+            guard error == nil else{
+                let userINfo = [NSLocalizedDescriptionKey: "There was an error with your request: \(error)"]
+                completionHandler(result: nil, error: NSError(domain: "taskForDeleteMethod", code: 1, userInfo: userInfo))
+                return
+            }
+            
+            /* GUARD: Did we get a successful 2XX response? */
+            guard let statusCode = (response as? NSHTTPURLResponse)?.statusCode where statusCode >= 200 && statusCode <= 299 else {
+                if let response = response as? NSHTTPURLResponse {
+                    let userInfo = [NSLocalizedDescriptionKey: "Your request returned an invalid response! Status code: \(response.statusCode)!"]
+                    completionHandler(result: nil, error: NSError(domain: "taskForDeleteMethod", code: 1, userInfo: userInfo))
+                } else if let response = response {
+                    let userInfo = [NSLocalizedDescriptionKey: "Your request returned an invalid response! Response: \(response)!"]
+                    completionHandler(result: nil, error: NSError(domain: "taskForDeleteMethod", code: 1, userInfo: userInfo))
+                } else {
+                    let userInfo = [NSLocalizedDescriptionKey: "Your request returned an invalid response!"]
+                    completionHandler(result: nil, error: NSError(domain: "taskForDeleteMethod'", code: 1, userInfo: userInfo))
+                }
+                return
+            }
+            
+            guard let data = data else{
+                let userInfo = [NSLocalizedDescriptionKey: "No data was returned by the request!"]
+                completionHandler(result: nil, error: NSError(domain: "taskForDeleteMethod", code: 1, userInfo: userINfo))
+                return
+            }
+            
                 let newData = data!.subdataWithRange(NSMakeRange(5, data!.length - 5))
                 UdacityClient.parseJSONWithCompletionHandler(newData, completionHandler: completionHandler)
-            }
         }
         
         task.resume()
         return task
     }
     
-    //Given an error response, check status-message is returned, otherwise return previous error
-    class func errorForData(data: NSData?, response: NSURLResponse?, error: NSError) -> NSError{
-        
-        if let parsedResult = (try? NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.AllowFragments)) as? [String : AnyObject]{
-            
-            if let errorMessage = parsedResult[UdacityClient.JSONResponseKeys.StatusMessage] as? String{
-                
-                let userInfo = [NSLocalizedDescriptionKey : errorMessage]
-                if let errorCode = parsedResult[UdacityClient.JSONResponseKeys.StatusCode] as? Int{
-                    
-                    return NSError(domain: "Udacity Error", code: errorCode, userInfo: userInfo)
-                }
-                
-                return NSError(domain: "Udacity Error", code: 1, userInfo: userInfo)
-            }
-        }
-        
-        return error
-    }
     
     //Given raw JSON, return a useable Foundation object
     class func parseJSONWithCompletionHandler(data: NSData, completionHandler: (result: AnyObject!, error: NSError?) -> Void){
         
-        var parsingError: NSError? = nil
-        let parsedResult: AnyObject?
+        var parsedResult: AnyObject!
         do {
-            
             parsedResult = try NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.AllowFragments)
-        } catch let error as NSError {
-            
-            parsingError = error
-            parsedResult = nil
+        } catch {
+            let userInfo = [NSLocalizedDescriptionKey: "Could not parse the data as JSON: '\(data)'"]
+            completionHandler(result: nil, error: NSError(domain: "parseJSONWithCompletionHandler", code: 1, userInfo: userInfo))
         }
-        
-        if let error = parsingError {
-            
-            completionHandler(result: nil, error: error)
-        
-        }else{
-            
-            completionHandler(result: parsedResult, error: nil)
-        }
+        completionHandler(result: parsedResult, error: nil)
     }
     
     //Mark -- Share Instance
     class func sharedInstance() -> UdacityClient{
         
         struct Singleton {
-            
             static var sharedInstance = UdacityClient()
         }
-        
         return Singleton.sharedInstance
     }
 }

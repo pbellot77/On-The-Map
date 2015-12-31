@@ -6,53 +6,42 @@
 //  Copyright © 2015 Swift File. All rights reserved.
 //
 
+import Foundation
+
 extension UdacityClient {
     
-    //Mark -- Constants
+    //MARK: -- Constants
     struct Constants{
-       
-        static let BaseURLSecure: String = "https://www.udacity.com/"
+        static let UdacityBaseURL: String = "https://www.udacity.com/"
     }
     
-    //Mark -- Methods
+    //MARK: -- Methods
     struct Methods{
-        
-        static let AccountLogIn = "api/session"
-        static let AccountLogOut = "api/session"
-        static let AccountUserData = "api/users/"
+        static let Session = "session"
+        static let Users = "users/"
     }
     
-    //Mark -- URLKeys
-    struct URLKeys {
-        
-    }
-    
-    //Mark -- Parameter Keys
-    struct ParameterKeys{
-        
-    }
-    
-    //Mark -- JSON Body Keys
+    //MARK: -- JSON Body Keys
     struct JSONBodyKeys {
-        
         static let Username = "username"
         static let Password = "password"
+        static let Udacity = "udacity"
     }
     
-    //Mark -- JSON Response Keys
+    //MARK: -- JSON Response Keys
     struct JSONResponseKeys {
         
-        static let StatusMessage = "error"
-        static let StatusCode = "status"
-        
+        //MARK: -- Account
         static let Account = "account"
         static let Registered = "registered"
-        static let UserID = "key"
+        static let Key = "key"
         
+        //MARK: -- Session
         static let Session = "session"
-        static let SessionID = "id"
+        static let ID = "id"
         static let Expiration = "expiration"
         
+        //MARK: -- User Data
         static let User = "user"
         static let FirstName = "first_name"
         static let LastName = "last_name"

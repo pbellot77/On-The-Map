@@ -7,124 +7,89 @@
 //
 
 import Foundation
-import UIKit
 
 extension UdacityClient{
     
-    func createSession(username: String, password: String, completionHandler:(message: String, error: NSError?) -> Void) {
-        
-        //Specify method and HTTP Body
-        let method: String = UdacityClient.Methods.AccountLogIn
-        
-        let jsonBody: [String : AnyObject] = [
-            "udacity" : [UdacityClient.JSONBodyKeys.Username,
-                UdacityClient.JSONBodyKeys.Password
-            ]
+    //MARK: -- Function that POSTs new session
+    func postSession(username: String, password: String, completionHandler: (result: String?, error: NSError?) -> Void){
+        let method = Methods.Session
+        let jsonBody = [
+            JSONBodyKeys.Udacity : [
+                JSONBodyKeys.Username : username,
+                JSONBodyKeys.Password : password
+            ],
         ]
         
-        //Mark -- Request
-        taskForPostMethod(method, jsonBody: jsonBody) { JSONResult, error in
+        taskForPostMethod(method, jsonBody: jsonBody) { (JSONResult, error) in
             
-            //Send values to completionHandler
-            if let error = error{
-                
-                completionHandler(message: "Sign in failed", error: error)
-                    
-                }else{
-                    
-                    if let account = JSONResult.valueForKey(UdacityClient.JSONResponseKeys.Account) as? NSDictionary {
-                        
-                        if let userID = account.valueForKey(UdacityClient.JSONResponseKeys.UserID) as? String{
-                            
-                            self.getPublicUserData(userID) { message, error in
-                                
-                                if let error = error {
-                                    
-                                    completionHandler(message: message, error: error)
-                                
-                                }else{
-                                    
-                                    completionHandler(message: message, error: nil)
-                                }
-                                
-                            }
-                        }
-                    }else{
-                        
-                        completionHandler(message: "Couldn't find account dictionary in createSession result", error: NSError(domain: "createSession parsing", code: 0, userInfo: [NSLocalizedDescriptionKey: "Please check your username and password and try again"]))
-                    }
-                }
+            guard error == nil else {
+                completionHandler(result: nil, error: error)
+                return
             }
-        }
-    
-    func logoutOfSession(completionHandler: (message: String, error: NSError?) -> Void) {
-        
-        //specify method
-        let method: String = UdacityClient.Methods.AccountLogIn
-        
-        //make the request
-        taskForDeleteMethod(method) { JSONResult, error in
             
-            if let error = error {
-                
-                completionHandler(message: "Logout Failed", error: error)
-            
-            }else{
-                
-                if let session = JSONResult.valueForKey(UdacityClient.JSONResponseKeys.Session) as? NSDictionary {
-                    
-                    if let _ = session.valueForKey(UdacityClient.JSONResponseKeys.SessionID) as? String {
-                        
-                        completionHandler(message: "Logout Successful", error: nil)
-                    }
-                }else{
-                    
-                    completionHandler(message: "Couldn't find session dictionary in logoutOfSession result", error: NSError(domain: "LogoutOfSession parsing", code: 0, userInfo: [NSLocalizedDescriptionKey: " Unknown error: Try logging out again"]))
+            if let dictionary = JSONResult! [JSONResponseKeys.Account] as? [String : AnyObject] {
+                if let result = dictionary[JSONResponseKeys.Key] as? String {
+                    completionHandler(result: result, error: nil)
+                } else {
+                    completionHandler(result: nil, error: NSError(domain: "postSession parsing", code: 0, userInfo: [NSLocalizedDescriptionKey: "Could not parse session"]))
                 }
+            } else {
+                completionHandler(result: nil, error: NSError(domain: "postSession parsing", code: 0, userInfo: [NSLocalizedDescriptionKey: "Could not parse session"]))
+                
             }
         }
     }
     
-    func getPublicUserData(userID: String, completionHandler:(message: String, error: NSError?) -> Void){
+    //MARK: -- Function that DELETEs the current session
+    func deleteSession(completionHandler: (result: AnyObject?, error: NSError?) -> Void) {
+        let method = Methods.Session
         
-        let method: String = UdacityClient.Methods.AccountUserData + userID
-        
-        taskForGetMethod(method) { JSONResult, error in
+        taskForDeleteMethod(method) {(JSONResult, error) in
             
-            if let error = error {
-                
-                completionHandler(message: "Getting public user data failed", error: error)
-            
-            }else{
-                
-                if let userDictionary = JSONResult.valueForKey(UdacityClient.JSONResponseKeys.User) as? NSDictionary {
-                    
-                    if let firstName = userDictionary.valueForKey(UdacityClient.JSONResponseKeys.FirstName) as? String {
-                        
-                        if let lastName = userDictionary.valueForKey(UdacityClient.JSONResponseKeys.LastName) as? String {
-                            
-                            UdacityClient.sharedInstance().userID = userID
-                            UdacityClient.sharedInstance().firstName = firstName
-                            UdacityClient.sharedInstance().lastName = lastName
-                            
-                            completionHandler(message: "User Info acquired! UserID: \(userID) FirstName: \(firstName) LastName: \(lastName)", error: nil)
-                        
-                        }else{
-                            
-                            completionHandler(message: "Unable to find last name in userDictionary", error: NSError(domain: "getPublicUserData parsing", code: 0, userInfo: [NSLocalizedDescriptionKey: "Could not parse getPublicUserData"]))
-                        }
-                    
-                    }else{
-                        
-                        completionHandler(message: "Unable to find first name in userDictionary", error: NSError(domain: "getPublicUserData parsing", code: 0, userInfo: [NSLocalizedDescriptionKey: "Could not parse get publicUserData"]))
-                    }
-                
-                }else{
-                   
-                    completionHandler(message: "Couldn't find user dictionary in getPublicUserData result", error: NSError(domain: "getPublicUserData parsing", code: 0, userInfo: [NSLocalizedDescriptionKey: "Unknown Udacity Error -- please check your username and password and try again"]))
-                }
+            guard error == nil else {
+                completionHandler(result: nil, error: error)
+                return
             }
             
+            if let dictionary = JSONResult[JSONResponseKeys.Session] as? [String:AnyObject] {
+                if let result = dictionary[JSONResponseKeys.ID] as? String {
+                completionHandler(result: result, error: nil)
+                } else {
+                    completionHandler(result: nil, error: NSError(domain: "deleteSession", code: 0, userInfo: [NSLocalizedDescriptionKey: "Could not delete session"]))
+                }
+            } else {
+                completionHandler(result: nil, error: NSError(domain: "deleteSession", code: 0, userInfo: [NSLocalizedDescriptionKey: "Could not delete session"]))
+            }
+        }
+    }
+    
+    //MARK: -- Function that GETs user information
+    func getUserData(userID: String, completionHandler: (result: [String]?, error: NSError?) -> Void) {
+        let method = Methods.Users + userID
+        
+        taskForGetMethod(method) {(JSONResult, error) in
+            
+            guard error == nil else {
+                completionHandler(result: nil, error: error)
+                return
+            }
+            
+            if let dictionary = JSONResult[JSONResponseKeys.User] as? [String:AnyObject] {
+                /* Array for user name */
+                var result = [String]()
+                
+                if let firstName = dictionary[JSONResponseKeys.FirstName] as? String{
+                    result.append(firstName)
+                    if let lastName = dictionary[JSONResponseKeys.LastName] as? String {
+                        result.append(lastName)
+                        completionHandler(result: result, error: nil)
+                    } else {
+                        completionHandler(result: nil, error: NSError(domain: "getUserData parsing", code: 0, userInfo: [NSLocalizedDescriptionKey: "Could not parse user data: Last Name"]))
+                    }
+                } else {
+                    completionHandler(result: nil, error: NSError(domain: "getUserData parsing", code: 0, userInfo: [NSLocalizedDescriptionKey: "Could not parse user data: First Name"]))
+                }
+            }
         }
     }
 }
