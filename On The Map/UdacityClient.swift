@@ -32,7 +32,7 @@ class UdacityClient: NSObject {
         let request = NSMutableURLRequest(URL: url)
         
         //make the request
-        let task = session.dataTaskWithRequest(request){ data, response, error) in
+        let task = session.dataTaskWithRequest(request){ (data, response, error) in
             
             /* GUARD: Was there an error */
             guard error == nil else {
@@ -42,7 +42,7 @@ class UdacityClient: NSObject {
             }
             
             /* GUARD: Did we get a successful 2XX response? */
-            guard let statusCode = (response as? NSHTTPURLResponse)?.statusCode where statusCode >= 200 && stutusCode <= 299 else {
+            guard let statusCode = (response as? NSHTTPURLResponse)?.statusCode where statusCode >= 200 && statusCode <= 299 else {
                 if let response = response as? NSHTTPURLResponse {
                     let userInfo = [NSLocalizedDescriptionKey: "Your Request returned an invalid respons! Status code: \(response.statusCode)!"]
                     completionHandler(result: nil, error: NSError(domain: "taskForGetMethod", code: 1, userInfo: userInfo))
@@ -85,14 +85,14 @@ class UdacityClient: NSObject {
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         
         do{
-            request.HTTPBody = try NSJSONSerialization.dataWithJSONObject(jsonBody, options: .PrettyPrinted)
+            request.HTTPBody = try! NSJSONSerialization.dataWithJSONObject(jsonBody, options: .PrettyPrinted)
         }
         
         let task = session.dataTaskWithRequest(request){ (data, response, error) in
             
             guard error == nil else {
                 let userInfo = [NSLocalizedDescriptionKey: "There was an error with your request: \(error)"]
-                completionHandler(result: nil, error: NSerror(domain: "taskForPostMethod", code: 1, userInfo: userInfo))
+                completionHandler(result: nil, error: NSError(domain: "taskForPostMethod", code: 1, userInfo: userInfo))
                 return
             }
             
@@ -118,7 +118,7 @@ class UdacityClient: NSObject {
                 return
             }
             /* Parse and use data */
-            let newData = data!.subdataWithRange(NSMakeRange(5, data!.length - 5))
+            let newData = data.subdataWithRange(NSMakeRange(5, data.length - 5))
             UdacityClient.parseJSONWithCompletionHandler(newData, completionHandler: completionHandler)
         }
         
@@ -146,7 +146,7 @@ class UdacityClient: NSObject {
         let task = session.dataTaskWithRequest(request){ data, response, error in
             
             guard error == nil else{
-                let userINfo = [NSLocalizedDescriptionKey: "There was an error with your request: \(error)"]
+                let userInfo = [NSLocalizedDescriptionKey: "There was an error with your request: \(error)"]
                 completionHandler(result: nil, error: NSError(domain: "taskForDeleteMethod", code: 1, userInfo: userInfo))
                 return
             }
@@ -168,11 +168,11 @@ class UdacityClient: NSObject {
             
             guard let data = data else{
                 let userInfo = [NSLocalizedDescriptionKey: "No data was returned by the request!"]
-                completionHandler(result: nil, error: NSError(domain: "taskForDeleteMethod", code: 1, userInfo: userINfo))
+                completionHandler(result: nil, error: NSError(domain: "taskForDeleteMethod", code: 1, userInfo: userInfo))
                 return
             }
             
-                let newData = data!.subdataWithRange(NSMakeRange(5, data!.length - 5))
+                let newData = data.subdataWithRange(NSMakeRange(5, data.length - 5))
                 UdacityClient.parseJSONWithCompletionHandler(newData, completionHandler: completionHandler)
         }
         

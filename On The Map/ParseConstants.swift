@@ -12,36 +12,24 @@ extension ParseClient {
     
     //Mark -- Constants
     struct Constants {
-        
-        // api keys
-        static let ParseAppID: String = "QrX47CA9cyuGewLdsL7o5Eb8iug6Em8yeOdnAbIr"
-        static let RestAPIKey: String = "QuWThTdiRmTux3YaDseYSEpUKo7aBYM737yKd4gY"
-        
-        //url
-        static let BaseURLSecure: String = "https://api.parse.com/"
+        static let ParseApplicationID: String = "QrX47CA9cyuGewLdsL7o5Eb8iug6Em8yeOdnAbIr"
+        static let ParseAPIKey: String = "QuWThTdiRmTux3YaDseYSEpUKo7aBYM737yKd4gY"
+        static let ParseBaseURL: String = "https://api.parse.com/1/classes/"
     }
     
     //Mark -- Methods
     struct Methods {
-        
-        static let StudentLocation: String = "1/classes/StudentLocation"
+        static let StudentLocation = "StudentLocation"
     }
-    
-    //Mark -- URL Keys
     
     //Mark -- Parameter Keys
     struct ParameterKeys {
-        
-        static let Limit = "limit"
-        static let Skip = "skip"
-        static let Order = "order"
         static let Where = "where"
-        static let ObjectID = "objectId"
+        static let UniqueKey = "uniqueKey"
     }
     
     //Mark -- JSON Body Keys
     struct JSONBodyKeys {
-        
         static let UniqueKey = "uniqueKey"
         static let FirstName = "firstName"
         static let LastName = "lastName"
@@ -53,14 +41,7 @@ extension ParseClient {
     
     //Mark -- JSON Response Keys
     struct JSONResponseKeys {
-        
         static let Results = "results"
-        
-        //errors
-        static let StatusMessage = "error"
-        static let StatusCode = "status"
-        
-        //students
         static let FirstName = "firstName"
         static let LastName = "lastName"
         static let Latitude = "latitude"
