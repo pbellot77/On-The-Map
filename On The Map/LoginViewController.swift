@@ -10,169 +10,247 @@ import UIKit
 
 class LoginViewController: UIViewController, UITextFieldDelegate {
     
+   //MARK: -- Properties
+    let gradientLayer = CAGradientLayer()
+    var session: NSURLSession!
+    var appDelegate: AppDelegate!
     
-    //Mark -- Outlets
-    @IBOutlet weak var loginLabel: UILabel!
-    @IBOutlet weak var loginButton: UIButton!
-    
+    //MARK: -- Outlets
+    @IBOutlet var mainView: UIView!
     @IBOutlet weak var emailTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
+    @IBOutlet weak var loginButton: UIButton!
+    @IBOutlet weak var facebookLoginButton: UIButton!
+    @IBOutlet weak var signUpButton: UIButton!
     
-    //Mark -- Variables
-    var appDelegate: AppDelegate!
-    var session: NSURLSession!
-    var tapRecognizer: UITapGestureRecognizer? = nil
-    
-    //Mark -- Lifecycle
+    //MARK: -- View lifecycle functions
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        /* Get the shared URL session */
         session = NSURLSession.sharedSession()
         
-        emailTextField.delegate = self
-        passwordTextField.delegate = self
+        /* Get the app delegate */
+        appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
         
-        //set placeholder text color
-        //found from Stackoverflow topic: http://stackoverflow.com/questions/26076054/changing-placeholder-text-color-with-swift
-        emailTextField.attributedPlaceholder = NSAttributedString(string: "Email", attributes: [NSBackgroundColorAttributeName: UIColor.whiteColor()])
-        passwordTextField.attributedPlaceholder = NSAttributedString(string: "Password", attributes: [NSBackgroundColorAttributeName: UIColor.whiteColor()])
-        
-        //left indent
-        //found from Stackoverflow topic: http://stackoverflow.com/questions/7565645/indent-the-text-in-a-uitextfield
-        let emailSpacerView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: 10))
-        emailTextField.leftViewMode = UITextFieldViewMode.Always
-        emailTextField.leftView = emailSpacerView
-        
-        let passwordSpacerView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: 10))
-        passwordTextField.leftViewMode = UITextFieldViewMode.Always
-        passwordTextField.leftView = passwordSpacerView
-        
-        loginButton.enabled = false
-        
-        //initialize tap recognizer
-        tapRecognizer = UITapGestureRecognizer(target: self, action: Selector("handleSingleTap:"))
-        tapRecognizer!.numberOfTapsRequired = 1
+        /* Configure the look and feel of the user interface */
+        configureUI()
+    }
     
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        setGradientLayerFrame()
     }
     
     override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        addKeyboardDismissRecognizer()
+        super.viewWillAppear(true)
+        hideNavigationBar()
     }
     
     override func viewWillDisappear(animated: Bool) {
-        super.viewWillDisappear(animated)
-        
-        removeKeyboardDismissRocognizer()
-        
-        emailTextField.text = ""
-        passwordTextField.text = ""
-        loginButton.enabled = false
+        super.viewWillDisappear(true)
+        //Show the navigation bar
+        navigationController?.navigationBar.hidden = false
     }
     
+    //MARK: -- Actions
     
-    @IBAction func loginToUdacity(sender: UIButton) {
-        dismissAnyVisibleKeyboards()
+    //Function is called when a user presses the log in button; it authenticates with Udacity
+    @IBAction func logInButton(sender: UIButton) {
         
-        UdacityClient.sharedInstance().createSession(emailTextField.text!, password: passwordTextField.text!){ message, error in
+        /* Disable the buttons in the UIonce the Login button has been pressed */
+        disableButtons(sender)
         
-                if let error = error {
-                print("Login Failed: \(message)")
-                let failureString = error.localizedDescription
+        /* Show activity to show the app is processing data */
+        let activityView = UIActivityIndicatorView.init(activityIndicatorStyle: UIActivityIndicatorViewStyle.WhiteLarge)
+        activityView.center = view.center
+        activityView.startAnimating()
+        view.addSubview(activityView)
+        
+        /* POST a new session */
+        UdacityClient.sharedInstance().postSession(emailTextField.text!, password: passwordTextField.text!) {(result, error) in
+            
+            /* GUARD: Was there an error? */
+            guard error == nil else {
                 
-                if(failureString.rangeOfString("server") != nil){
-                    self.displayError("\(failureString)")
-                }else{
-                    self.shakeView()
+                /* Check to see what type of error occured */
+                if let errorString = error?.userInfo[NSLocalizedDescriptionKey] as? String {
+                    
+                    /* Display an alert and shake the view letting the user know the authentication failed */
+                    dispatch_async(dispatch_get_main_queue(),{
+                        
+                        self.showAuthenticationAlert(errorString)
+                        self.shakeScreen()
+                        activityView.stopAnimating()
+                    })
                 }
-                    
-            }else{
-                    
-                print("Login Complete! \(message)")
-                self.completeLogin()
+                return
             }
+            
+            self.appDelegate.userID = result!
+            
+            dispatch_async(dispatch_get_main_queue(), {
+                
+                // Display the tabbed view controller
+                let tabViewController = self.storyboard!.instantiateViewControllerWithIdentifier("TabBarController")
+                self.navigationController?.pushViewController(tabViewController, animated: true)
+                
+                //Stop animating the spinner and enable buttons
+                self.enableButtons(sender)
+                activityView.stopAnimating()
+            })
         }
     }
-    
-    @IBAction func signUpWithUdacity(sender: UIButton) {
-        let url = NSURL(string: "https://www.google.com/url?q=https://www.udacity.com/account/auth%23!/signin&sa=D&usg=AFQjCNHOjlXo3QS15TqT0Bp_TKoR9Dvypw")!
-        UIApplication.sharedApplication().openURL(url)
+   //Function is called when a user presses the sign up button; opens the Udacity sign in page in safari
+    @IBAction func signUpButton(sender: UIButton){
+        UIApplication.sharedApplication().openURL(NSURL(string: "https://www.udacity.com/account/auth#!/signin")!)
     }
     
-    //Mark -- Login
-    func completeLogin(){
+    //MARK: -- Helper functions
+    
+    //MARK: -- User interface helper functions
+    //Function sets up the user interface
+    func configureUI(){
+        //Add set and add gradientLayer to the view
+        setGradientLayerColors()
+        setGradientLayerFrame()
+        view.layer.insertSublayer(gradientLayer, atIndex: 0)
         
-        dispatch_async(dispatch_get_main_queue(), {
-          
-            let controller = self.storyboard!.instantiateViewControllerWithIdentifier("UserTabBarController") as! UITabBarController
-            self.presentViewController(controller, animated: true, completion: nil)
-        })
+        //Configure the textFields to each have an indent
+        indentTextInTextfield(emailTextField)
+        indentTextInTextfield(passwordTextField)
+        
+        //Configure the placeholder text in the textfields to be white
+        configurePlaceHolderText()
+        
+        //Make the ViewController the delegate of the text fields
+        emailTextField.delegate = self
+        passwordTextField.delegate = self
+        
+        //Round the corners of the buttons
+        roundButtonCorner(loginButton)
+        roundButtonCorner(facebookLoginButton)
+        
+        //Hide the navigation bar
+        hideNavigationBar()
+        
+        //Facebook integration not implemented so hide the button
+        facebookLoginButton.hidden = true
     }
     
-    //learned shake animation from stackOverflow: http://stackoverflow.com/questions//27987048/shake-animation-for-uitextfield-uiview-in-swift
-    func shakeView(){
-        
-        dispatch_async(dispatch_get_main_queue(), {
-            
-            let animation = CABasicAnimation(keyPath: "position")
-            animation.duration = 0.07
-            animation.repeatCount = 4
-            animation.autoreverses = true
-            animation.fromValue = NSValue(CGPoint: CGPointMake(self.view.center.x - 5, self.view.center.y))
-            animation.toValue = NSValue(CGPoint: CGPointMake(self.view.center.x + 5, self.view.center.y))
-            self.view.layer.addAnimation(animation, forKey: "position")
-        })
+    //Function to hide the navigation
+    func hideNavigationBar(){
+        navigationController?.navigationBar.hidden = true
     }
     
-    func displayError(errorString: String?){
-        UdacityClient.sharedInstance().loginError = errorString
-        
-        dispatch_async(dispatch_get_main_queue(), {
-            
-            let alert: UIAlertController = UIAlertController(title: "Login Failed", message: errorString, preferredStyle: .Alert)
-            let okAction: UIAlertAction = UIAlertAction(title: "OK", style: .Cancel, handler: nil)
-            alert.addAction(okAction)
-            
-            self.presentViewController(alert, animated: true, completion: nil)
-        })
+    //Function that rounds the corners of the button
+    func roundButtonCorner(button: UIButton){
+        button.layer.cornerRadius = 3
+        button.clipsToBounds = true
     }
     
-    @IBAction func textFieldChanged(sender: UITextField) {
+    //Function to enable the login button
+    func enableButtons(sender: UIButton){
+        loginButton.enabled = true
+        facebookLoginButton.enabled = true
+        signUpButton.enabled = true
+        sender.alpha = 1.0
+    }
+    
+    //Function to diable the login button to prevent it from being pressed multiple times
+    func disableButtons(sender: UIButton) {
+        loginButton.enabled = true
+        facebookLoginButton.enabled = false
+        signUpButton.enabled = false
+        sender.alpha = 1.0
+    }
+    
+    //Function that sets the frame of the gradient layer to the bounds of the mainView
+    func setGradientLayerFrame(){
+        gradientLayer.frame = mainView.bounds
+    }
+    
+    //Function that sets the colors of the gradient layer
+    func setGradientLayerColors(){
         
-        if(emailTextField.text!.isEmpty || passwordTextField.text!.isEmpty){
-            loginButton.enabled = false
-        }else{
-            loginButton.enabled = true
+        //Light orange
+        let firstColor = UIColor(red: 0.992, green: 0.592, blue: 0.165, alpha: 1)
+        //Dark orange
+        let secondColor = UIColor(red: 0.992, green: 0.435, blue: 0.129, alpha: 1)
+        gradientLayer.colors = [firstColor.CGColor, secondColor.CGColor]
+    }
+    
+    //MARK: -- Textfield helper functions
+    
+    //Function that sets the color and placeholder text for locationTextField
+    func indentTextInTextfield(textField: UITextField) {
+        let spacerView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: 10))
+        textField.leftViewMode = UITextFieldViewMode.Always
+        textField.leftView = spacerView
+    }
+    
+    //Function that sets the color and placeholder text for locationTextField
+    func configurePlaceHolderText(){
+        /*Set the style for the Email text field */
+        var attributedString = NSAttributedString(string: "Email", attributes:  [NSForegroundColorAttributeName:UIColor.whiteColor()])
+        emailTextField.attributedPlaceholder = attributedString
+        /*Set the style for the Password text field */
+        attributedString = NSAttributedString(string: "Password", attributes: [NSForegroundColorAttributeName:UIColor.whiteColor()])
+        passwordTextField.attributedPlaceholder = attributedString
+        
+    }
+    
+    //MARK: -- Error helper functions
+    
+    //Functions that presents an alert to the user with a reason as to why their login failed
+    func showAuthenticationAlert(errorString: String){
+        let titleString = "Authentication failed!"
+        var errorString = errorString
+        
+        if errorString.rangeOfString("400") != nil{
+            errorString = "Please enter your email address and password."
+        } else if errorString.rangeOfString("403")  != nil {
+            errorString = "Wrong email address or password entered."
+        } else if errorString.rangeOfString("1009") != nil {
+            errorString = "Something is wrong with the network connection."
+        } else {
+            errorString = "Something went wrong! Try again"
         }
+        
+        showAlert(titleString, alertMessage: errorString, actionTitle: "Try again")
     }
     
-    // Mark -- Keyboard helpers
-    func addKeyboardDismissRecognizer(){
-        view.addGestureRecognizer(tapRecognizer!)
+    //Function that configures and shows an alert
+    func showAlert(alertTitle: String, alertMessage: String, actionTitle: String){
+        
+        /* Configure the alert view to display the error */
+        let alert = UIAlertController(title: alertTitle, message: alertMessage, preferredStyle: .Alert)
+        alert.addAction(UIAlertAction(title: actionTitle, style: .Default, handler: nil))
+        
+        /* Present the alert view */
+        self.presentViewController(alert, animated: true, completion: nil)
     }
     
-    func removeKeyboardDismissRocognizer(){
-        view.removeGestureRecognizer(tapRecognizer!)
+    //Function that animates the screen to show login has failed
+    func shakeScreen(){
+        
+        /*Configure a shake animation */
+        let shakeAnimation = CABasicAnimation(keyPath: "position")
+        shakeAnimation.duration = 0.07
+        shakeAnimation.repeatCount = 4
+        shakeAnimation.autoreverses = true
+        shakeAnimation.fromValue = NSValue(CGPoint: CGPointMake(self.mainView.center.x - 10, self.mainView.center.y - 10))
+        shakeAnimation.toValue = NSValue(CGPoint: CGPointMake(self.mainView.center.x + 10, self.mainView.center.y + 10))
+        
+        /* Shake the view */
+        self.mainView.layer.addAnimation(shakeAnimation, forKey: "position")
     }
     
-    func handleSingleTap(recognizer: UITapGestureRecognizer){
-        view.endEditing(true)
-    }
-    
+    //MARK: -- Text field delegate functions
     func textFieldShouldReturn(textField: UITextField) -> Bool {
-        view.endEditing(true)
+        textField.resignFirstResponder()
         return true
     }
-}
 
-extension LoginViewController{
-    func dismissAnyVisibleKeyboards(){
-        
-        if(emailTextField.isFirstResponder() || passwordTextField.isFirstResponder()){
-            view.endEditing(true)
-        }
-    }
 }
 

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="15A279b" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="mDk-fY-hdq">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="15A279b" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="c0d-hp-efG">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
@@ -18,7 +18,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="udacity" translatesAutoresizingMaskIntoConstraints="NO" id="Tci-6K-hkz">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="udacity" translatesAutoresizingMaskIntoConstraints="NO" id="Tci-6K-hkz">
                                 <rect key="frame" x="213" y="43" width="174" height="135"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="174" id="qx4-6e-9ih"/>
@@ -95,10 +95,11 @@
                             <constraint firstItem="qwF-K1-fE5" firstAttribute="top" secondItem="PMq-jH-P3p" secondAttribute="bottom" constant="8" symbolic="YES" id="uQd-jn-qdV"/>
                         </constraints>
                     </view>
+                    <navigationItem key="navigationItem" id="NyC-gp-t9t"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="UeS-7k-omx" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="803" y="672"/>
+            <point key="canvasLocation" x="1615" y="672"/>
         </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="JKO-vH-9TR">
@@ -116,7 +117,7 @@
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="aEC-5s-IXl" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1437" y="672"/>
+            <point key="canvasLocation" x="2249" y="672"/>
         </scene>
         <!--Map View Controller-->
         <scene sceneID="Vt2-EO-yq2">
@@ -149,7 +150,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="rGx-nq-V1k" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2881" y="317"/>
+            <point key="canvasLocation" x="3693" y="317"/>
         </scene>
         <!--Info Posting View Controller-->
         <scene sceneID="9oI-6b-aji">
@@ -201,7 +202,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="67w-Ih-eES" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3618" y="646"/>
+            <point key="canvasLocation" x="4430" y="646"/>
         </scene>
         <!--Table View Controller-->
         <scene sceneID="qz2-7w-qQG">
@@ -253,7 +254,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="fHM-Mk-ePU" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2881" y="1001"/>
+            <point key="canvasLocation" x="3693" y="1001"/>
         </scene>
         <!--Item-->
         <scene sceneID="wj1-LZ-5Kb">
@@ -272,7 +273,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="SPs-1p-aEL" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2184" y="1001"/>
+            <point key="canvasLocation" x="2996" y="1001"/>
         </scene>
         <!--Item-->
         <scene sceneID="kYJ-AV-Jhr">
@@ -291,7 +292,25 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="yMi-54-2Yb" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2184" y="317"/>
+            <point key="canvasLocation" x="2996" y="317"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="fWQ-Ay-E8q">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="c0d-hp-efG" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="Vfc-Xl-38g">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="mDk-fY-hdq" kind="relationship" relationship="rootViewController" id="sJU-zj-gt3"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="V1R-zf-sAf" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="913" y="672"/>
         </scene>
     </scenes>
     <resources>
