@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		BA0331761C3228370035B897 /* InfoPostingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA0331751C3228370035B897 /* InfoPostingViewController.swift */; };
+		BA0331761C3228370035B897 /* InformationPostingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA0331751C3228370035B897 /* InformationPostingViewController.swift */; };
 		BA1F65E41C31934F00B7725B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BA1F65E31C31934F00B7725B /* Main.storyboard */; };
 		BA91BE321C109B1A00EB71CF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA91BE311C109B1A00EB71CF /* AppDelegate.swift */; };
 		BA91BE341C109B1A00EB71CF /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA91BE331C109B1A00EB71CF /* LoginViewController.swift */; };
@@ -45,7 +45,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		BA0331751C3228370035B897 /* InfoPostingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InfoPostingViewController.swift; sourceTree = "<group>"; };
+		BA0331751C3228370035B897 /* InformationPostingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InformationPostingViewController.swift; sourceTree = "<group>"; };
 		BA1F65E31C31934F00B7725B /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		BA91BE2E1C109B1A00EB71CF /* On The Map.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "On The Map.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BA91BE311C109B1A00EB71CF /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -163,7 +163,7 @@
 				BA91BE331C109B1A00EB71CF /* LoginViewController.swift */,
 				BAFAB1111C29A3DB0023DA63 /* MapViewController.swift */,
 				BAFAB1131C2B3C9E0023DA63 /* TableViewController.swift */,
-				BA0331751C3228370035B897 /* InfoPostingViewController.swift */,
+				BA0331751C3228370035B897 /* InformationPostingViewController.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -331,7 +331,7 @@
 				BA91BE321C109B1A00EB71CF /* AppDelegate.swift in Sources */,
 				BA95F4F21C18CD0000C17D3E /* UdacityConvenience.swift in Sources */,
 				BA95F4E91C174CD400C17D3E /* UdacityClient.swift in Sources */,
-				BA0331761C3228370035B897 /* InfoPostingViewController.swift in Sources */,
+				BA0331761C3228370035B897 /* InformationPostingViewController.swift in Sources */,
 				BAFAB1101C220A320023DA63 /* ParseConvenience.swift in Sources */,
 				BAFAB10E1C20BE7E0023DA63 /* ParseConstants.swift in Sources */,
 			);

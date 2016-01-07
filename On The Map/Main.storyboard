@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="15A279b" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="c0d-hp-efG">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="15A279b" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
@@ -104,7 +104,7 @@
         <!--Tab Bar Controller-->
         <scene sceneID="JKO-vH-9TR">
             <objects>
-                <tabBarController storyboardIdentifier="UserTabBarController" id="aXo-lZ-QMx" sceneMemberID="viewController">
+                <tabBarController storyboardIdentifier="TabBarController" id="aXo-lZ-QMx" sceneMemberID="viewController">
                     <tabBar key="tabBar" contentMode="scaleToFill" id="bEE-3Z-vlG">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="49"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -152,10 +152,10 @@
             </objects>
             <point key="canvasLocation" x="3693" y="317"/>
         </scene>
-        <!--Info Posting View Controller-->
+        <!--Information Posting View Controller-->
         <scene sceneID="9oI-6b-aji">
             <objects>
-                <viewController id="p8n-Vs-hGm" customClass="InfoPostingViewController" sceneMemberID="viewController">
+                <viewController id="p8n-Vs-hGm" customClass="InformationPostingViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Pfi-TL-f3Z"/>
                         <viewControllerLayoutGuide type="bottom" id="o4z-Yu-CFj"/>
@@ -293,24 +293,6 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="yMi-54-2Yb" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2996" y="317"/>
-        </scene>
-        <!--Navigation Controller-->
-        <scene sceneID="fWQ-Ay-E8q">
-            <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="c0d-hp-efG" sceneMemberID="viewController">
-                    <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="Vfc-Xl-38g">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </navigationBar>
-                    <nil name="viewControllers"/>
-                    <connections>
-                        <segue destination="mDk-fY-hdq" kind="relationship" relationship="rootViewController" id="sJU-zj-gt3"/>
-                    </connections>
-                </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="V1R-zf-sAf" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="913" y="672"/>
         </scene>
     </scenes>
     <resources>

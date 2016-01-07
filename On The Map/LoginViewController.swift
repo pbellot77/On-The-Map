@@ -20,7 +20,6 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var emailTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
     @IBOutlet weak var loginButton: UIButton!
-    @IBOutlet weak var facebookLoginButton: UIButton!
     @IBOutlet weak var signUpButton: UIButton!
     
     //MARK: -- View lifecycle functions
@@ -129,13 +128,10 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         
         //Round the corners of the buttons
         roundButtonCorner(loginButton)
-        roundButtonCorner(facebookLoginButton)
         
         //Hide the navigation bar
         hideNavigationBar()
         
-        //Facebook integration not implemented so hide the button
-        facebookLoginButton.hidden = true
     }
     
     //Function to hide the navigation
@@ -152,7 +148,6 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     //Function to enable the login button
     func enableButtons(sender: UIButton){
         loginButton.enabled = true
-        facebookLoginButton.enabled = true
         signUpButton.enabled = true
         sender.alpha = 1.0
     }
@@ -160,7 +155,6 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     //Function to diable the login button to prevent it from being pressed multiple times
     func disableButtons(sender: UIButton) {
         loginButton.enabled = true
-        facebookLoginButton.enabled = false
         signUpButton.enabled = false
         sender.alpha = 1.0
     }

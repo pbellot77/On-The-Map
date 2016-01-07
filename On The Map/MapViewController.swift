@@ -8,170 +8,181 @@
 
 import UIKit
 import MapKit
-import CoreLocation
 
 class MapViewController: UIViewController, MKMapViewDelegate {
+    
+    //MARK: -- Properties
+    var appDelegate: AppDelegate!
     
     //MARK: -- Outlets
     @IBOutlet weak var mapView: MKMapView!
     
-    //MARK: -- Variables
-    var locationsSet = false
-    let emptyURLSubtitleText = "Student has not entered a URL"
-
+    //MARK: -- Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        mapView.delegate = self
         
-        //Set bar button items
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Logout", style: UIBarButtonItemStyle.Plain, target: self, action: Selector("logout:"))
-        
-        let refreshButton: UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Refresh, target: self, action: Selector("refreshButtonClicked:"))
-        let pinImage: UIImage = UIImage(named: "pin")!
-        let pinButton: UIBarButtonItem = UIBarButtonItem(image: pinImage, style: UIBarButtonItemStyle.Plain, target: self, action: Selector("addPin:"))
-        let buttons = [refreshButton, pinButton]
-        
-        navigationItem.rightBarButtonItems = buttons
-        
-        setLocations()
+        appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        setupMapViewConstraints()
     }
     
     override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(animated)
-        if(locationsSet){
-            setPinsOnMap()
-        }
+        super.viewWillAppear(true)
+        setupNavigationBar()
+        getStudentData()
+        getUserData()
     }
     
-    //MARK: -- Tab Bar Buttons
-    func logout(sender: AnyObject){
-        UdacityClient.sharedInstance().logoutOfSession() { result, error in
-            if let error = error {
-                self.showAlertController("Udacity Logout Error", message: error.localizedDescription)
-            }else{
-                print("Successfully logged out of Udacity session")
-                self.dismissViewControllerAnimated(true, completion: nil)
-            }
-        }
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        setupMapViewConstraints()
     }
     
-    func addPin(sender: AnyObject) {
-        let object:AnyObject = storyboard!.instantiateViewControllerWithIdentifier("InfoPostingViewController")
-        let addPinVC = object as! InfoPostingViewController
+    //Function that presents the Information Posting View Controller
+    func presentInformationPostingViewController(){
         
-        presentViewController(addPinVC, animated: true, completion: nil)
-    }
-    
-    func refreshButtonClicked(sender: AnyObject){
-        setLocations()
-    }
-    
-    //MARK: -- Map Behavior
-    func setLocations(){
-        ParseClient.sharedInstance().getStudentLocation() { result, error in
-            if let error = error {
-                self.showAlertController("Parse Error", message: error.localizedDescription)
-            }else{
-                print("Successfully got student info!")
+        ParseClient.sharedInstance().queryForAStudent() {(result, error) in
+            
+            guard error == nil else {
+                let alertTitle = "Error fetching student data"
+                let alertMessage = "Something went wrong when checking to see if you have already posted your location"
+                let actionTitle = "Try Again"
                 
-                ParseClient.sharedInstance().studentLocations = result!
-                self.locationsSet = true
-                self.setPinsOnMap()
+                dispatch_async(dispatch_get_main_queue(), {
+                    self.showAlert(alertTitle, alertMessage: alertMessage, actionTitle: actionTitle)
+                })
+                return
+            }
+            
+            if result?.count != 0 {
+                let resultArray = result![0]
+                let objectID = resultArray[ParseClient.JSONResponseKeys.ObjectID]
+                self.appDelegate.objectID = objectID as! String
+                self.showOverwriteLocationAlert()
             }
         }
     }
     
-    func setPinsOnMap(){
-        dispatch_async(dispatch_get_main_queue(), {
+    //Function that is called when the loout button is pressed
+    func logOut() {
+        UdacityClient.sharedInstance().deleteSession() {(result, error) in
             
-            self.mapView.removeAnnotations(self.mapView.annotations)
-            
-            var annotations = [MKPointAnnotation]()
-            
-            for student in ParseClient.sharedInstance().studentLocations {
+            guard error == nil else {
+                let alertTitle = "Couldn't log out!"
+                let alertMessage = error?.userInfo[NSLocalizedDescriptionKey] as? String
+                let actionTitle = "Try Again"
                 
-                let firstName = student.firstName
-                let lastName = student.lastName
-                
-                var mediaURL = ""
-                if (student.mediaURL != nil){
-                    mediaURL = student.mediaURL!
-                }else{
-                    mediaURL = self.emptyURLSubtitleText
-                }
-                
-                let latitude = CLLocationDegrees(student.latitude!)
-                let longitude = CLLocationDegrees(student.longitude!)
-                let coordinates = CLLocationCoordinate2DMake(latitude, longitude)
-                _ = student.uniqueKey
-                
-                let annotation = MKPointAnnotation()
-                annotation.coordinate = coordinates
-                annotation.title = "\(firstName) \(lastName)"
-                annotation.subtitle = mediaURL
-                annotations.append(annotation)
+                dispatch_async(dispatch_get_main_queue(), {
+                    self.showAlert(alertTitle, alertMessage: alertMessage!, actionTitle: actionTitle)
+                })
+                return
             }
-            self.mapView.addAnnotations(annotations)
-        })
-    }
-    
-    //MARK: -- MKMapViewDelegate functions
-    func mapView(mapview: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
-        let reuseID = "pin"
-        var pinView = mapView.dequeueReusableAnnotationViewWithIdentifier(reuseID) as? MKPinAnnotationView
+        }
         
-        if(pinView == nil) {
-            
-            pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseID)
-            pinView!.canShowCallout = true
-            _ = annotation.title!
-            pinView!.pinTintColor = UIColor.redColor()
-            pinView!.rightCalloutAccessoryView = UIButton(type: .DetailDisclosure)
-        }else{
-            pinView!.annotation = annotation
-        }
-        return pinView
-    }
-
-    func mapView(mapView: MKMapView, annotationView: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
-        if(annotationView.annotation!.subtitle! != emptyURLSubtitleText) {
-            if(control == annotationView.rightCalloutAccessoryView){
-                let urlString = annotationView.annotation!.subtitle!
-            
-                if(verifyURL(urlString)){
-                    UIApplication.sharedApplication().openURL(NSURL(string: urlString!)!)
-                }else{
-                    showAlertController("URL Lookup Failed", message: "The provided URL is not valid.")
-            
-                }
-            }
-        }
-    }
-    //MARK: -- Helpers
-    // learned how to verify urls from this question: http://stackoverflow.com/questions/28079123/how-to-check-validity-of-url-in-swift
-    func verifyURL(urlString: String?) -> Bool {
-        
-        if let urlString = urlString {
-            if let url = NSURL(string: urlString) {
-                return UIApplication.sharedApplication().canOpenURL(url)
-            }
-        }
-        return false
+        /* Show the log in view controller */
+        navigationController!.popToRootViewControllerAnimated(true)
     }
     
-    func showAlertController(title: String, message: String){
+    //Function that gets the student data
+    func getStudentData(){
+        let activityView = UIView.init(frame: mapView.frame)
+        activityView.backgroundColor = UIColor.grayColor()
+        activityView.alpha = 0.8
+        view.addSubview(activityView)
         
-        dispatch_async(dispatch_get_main_queue(), {
+        /* Show activity spinner */
+        let activitySpinner = UIActivityIndicatorView.init(activityIndicatorStyle: UIActivityIndicatorViewStyle.WhiteLarge)
+        activitySpinner.center = view.center
+        activitySpinner.startAnimating()
+        activityView.addSubview(activitySpinner)
+        
+        ParseClient.sharedInstance().getStudentLocations {(result, error) in
             
-            print("failure string from client: \(message)")
+            guard error == nil else {
+                let alertTitle = "Download failed"
+                let alertMessage = "There was a problem fetching the student data."
+                let actionTitle = "Try Again"
+                
+                dispatch_async(dispatch_get_main_queue(), {
+                    self.showAlert(alertTitle, alertMessage: alertMessage, actionTitle: actionTitle)
+                    activityView.removeFromSuperview()
+                    activitySpinner.stopAnimating()
+                })
+                return
+            }
             
-            let alert: UIAlertController = UIAlertController(title: title, message: message, preferredStyle: .Alert)
-            let okAction: UIAlertAction = UIAlertAction(title: "OK", style: .Cancel, handler: nil)
-            alert.addAction(okAction)
+            /* Clear any previously fetched student data */
+            if !StudentInformation.studentData.isEmpty {
+                StudentInformation.studentData.removeAll()
+            }
             
-            self.presentViewController(alert, animated: true, completion: nil)
+            /* For each student in the returned results add it to the StudentDataStore */
+            for s in result! {
+                StudentInformation.studentData.append(StudentInformation(dictionary: s))
+            }
             
-        })
+            /* Sort the student data in order of last updated */
+            StudentInformation.studentData = StudentInformation.studentData.sort() {$0.updatedAt.compare($1.updatedAt) == NSComparisonResult.OrderedDescending}
+            
+            /* Present next viewController showing the student data */
+            dispatch_async(dispatch_get_main_queue(), {
+                self.populateMapWithStudentData()
+                
+                activityView.removeFromSuperview()
+                activitySpinner.stopAnimating()
+            })
+        }
     }
-}
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+  }

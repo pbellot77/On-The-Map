@@ -1,5 +1,5 @@
 //
-//  InfoPostingViewController.swift
+//  InformationPostingViewController.swift
 //  On The Map
 //
 //  Created by Patrick Bellot on 12/28/15.
@@ -42,7 +42,7 @@ class InfoPostingViewController: UIViewController, UITextFieldDelegate, MKMapVie
         urlTextField.delegate = self
         
         /* textfield and button setup */
-        configurePlaceholderText("Enter your location here", textfield: locationTextField)
+        configurePlaceholderText("Enter your location here", textField: locationTextField)
         roundButtonCorner(findOnTheMapButton)
         boldText()
     }
