@@ -82,6 +82,30 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         navigationController!.popToRootViewControllerAnimated(true)
     }
     
+    //MARK: -- Helper functions
+    
+    //Function that gets the user data
+    func getUserData(){
+        /* GET the users first and last name */
+        UdacityClient.sharedInstance().getUserData(appDelegate.userID) {(result, error) in
+            
+            guard error == nil else {
+                let alertTitle = "Couldn't get your data"
+                let alertMessage = "There was a problem trying to fetch your name and user ID."
+                let actionTitle = "OK"
+                
+                dispatch_async(dispatch_get_main_queue(), {
+                    self.showAlert(alertTitle, alertMessage: alertMessage, actionTitle: actionTitle)
+                    self.dismissViewControllerAnimated(true, completion: nil)
+                })
+                return
+            }
+            /* Store the user resulting user data in the appDelegate */
+            self.appDelegate.userData = result!
+            
+        }
+    }
+    
     //Function that gets the student data
     func getStudentData(){
         let activityView = UIView.init(frame: mapView.frame)
@@ -132,6 +156,56 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             })
         }
     }
+    
+    //Function that populates the map with data
+    func populateMapWithStudentData(){
+        
+        /* Remove any pins previously on the map to avoid duplicates */
+        if !mapView.annotations.isEmpty{
+            mapView.removeAnnotations(mapView.annotations)
+        }
+        
+        var annotations = [MKPointAnnotation]()
+        
+        /* For each student in the data */
+        for s in StudentInformation.studentData {
+            
+            /* Get the lat and lon values to create a coordinate */
+            let lat = CLLocationDegrees(s.latitude)
+            let lon = CLLocationDegrees(s.longitude)
+            let coordinate = CLLocationCoordinate2D(latitude: lat, longitude: lon)
+            
+            /* Make the map annotation with the coordinate and other student data */
+            let annotation = MKPointAnnotation()
+            annotation.coordinate = coordinate
+            annotation.title = "\(s.firstName) \(s.lastName)"
+            annotation.subtitle = s.mediaURL
+            
+            /* Add the annotation to the array */
+            annotations.append(annotation)
+        }
+        /* Add the annotations to the map */
+        mapView.addAnnotations(annotations)
+    }
+    
+    //MARK: -- User interface helper functions
+    
+    //Function that configures the map view constraints
+    func setupMapViewConstraints(){
+        
+        /* Setup the top constraint */
+        var mapViewConstraint = NSLayoutConstraint(item: mapView, attribute: .Top, relatedBy: .Equal, toItem: view, attribute: .Top, multiplier: 1, constant: CGRectGetHeight(navigationController!.navigationBar.frame))
+        
+        view.addConstraint(mapViewConstraint)
+        
+        /* Setup the bottom constraint */
+        let tabBarHeight = CGRectGetHeight(tabBarController!.tabBar.frame)
+        
+        mapViewConstraint = NSLayoutConstraint(item: mapView, attribute: .Bottom, relatedBy: .Equal, toItem: view, attribute: .Bottom, multiplier: 1, constant: -tabBarHeight)
+        
+        view.addConstraint(mapViewConstraint)
+    }
+        
     
     
     
