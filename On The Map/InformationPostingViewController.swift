@@ -9,8 +9,7 @@
 import UIKit
 import MapKit
 
-@IBDesignable
-class InfoPostingViewController: UIViewController, UITextFieldDelegate, MKMapViewDelegate {
+class InformationPostingViewController: UIViewController, UITextFieldDelegate, MKMapViewDelegate {
     
     //MARK: -- Outlets
     @IBOutlet weak var studyingLabel: UILabel!

@@ -205,58 +205,110 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         
         view.addConstraint(mapViewConstraint)
     }
+    
+    //Fuction that configures the navigation bar
+    func setupNavigationBar(){
         
+        /*Set the back button on the navigation bar to be logged out */
+        let customLeftBarButton = UIBarButtonItem(title: "Log Out", style: .Plain, target: self, action: "logOut")
+        tabBarController!.navigationItem.setLeftBarButtonItem(customLeftBarButton, animated: false)
+        
+        /* Set the title of the navigation bar to be On The Map */
+        tabBarController!.navigationItem.title = "On The Map"
+        
+        /* Create an array of bar button items */
+        var customButtons = [UIBarButtonItem]()
+        
+        /* Create pin button */
+        let pinImage = UIImage(named: "pin")
+        let pinButton = UIBarButtonItem(image: pinImage, style: .Plain, target: self, action: "presentInformationPostingViewController")
+        
+        /* create refresh button */
+        let refreshButton = UIBarButtonItem(barButtonSystemItem: .Refresh, target: self, action: "getStudentData")
+        
+        /* Add the buttons to the array */
+        customButtons.append(refreshButton)
+        customButtons.append(pinButton)
+        
+        /* Add buttons to nav bar */
+        tabBarController!.navigationItem.setRightBarButtonItems(customButtons, animated: false)
+    }
     
+    //MARK: -- Map delegate helper functions
     
+    //Function that adds pins to the map
+    func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
+        let reuseId = "pin"
+        var pinView = mapView.dequeueReusableAnnotationViewWithIdentifier(reuseId) as? MKPinAnnotationView
+        
+        if pinView == nil {
+            pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
+            pinView!.canShowCallout = true
+            pinView!.pinTintColor = UIColor.redColor()
+            pinView!.rightCalloutAccessoryView = UIButton(type: .DetailDisclosure)
+        } else {
+            pinView!.annotation = annotation
+        }
+        
+        return pinView
+    }
     
+    //Function that opens the URL a student has provided when the pin detail is clicked
+    func mapView(mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
+        
+        if control == view.rightCalloutAccessoryView{
+            let app = UIApplication.sharedApplication()
+            if let toOpen = view.annotation?.subtitle! {
+                if UIApplication.sharedApplication().canOpenURL(NSURL(string: toOpen)!) {
+                    let url = NSURL(string: toOpen)
+                    app.openURL(url!)
+                } else {
+                    let alertTitle = "Unable to load webpage"
+                    let alertMessage = "Webpage couldn't be opened because the link was invalid."
+                    let actionTitle = "Try Again"
+                    
+                    showAlert(alertTitle, alertMessage: alertMessage, actionTitle: actionTitle)
+                }
+            }
+        }
+    }
     
+    //MARK: -- Error helper functions
     
+    func showOverwriteLocationAlert(){
+        /* Prepare the strings for the alert */
+        let userFirstName = self.appDelegate.userData[0]
+        let userLastName = self.appDelegate.userData[1]
+        let alertTitle = "Overwrite location?"
+        let alertMessage = userFirstName + "" + userLastName + "do you really want to overwrite your existing location?"
+        
+        /* Prepare to overwrite for the alert */
+        let overWriteAction = UIAlertAction(title: "Overwrite", style: .Default) {(action) in
+            /* instantiate and then present the view controller */
+            let informationPostViewController = self.storyboard!.instantiateViewControllerWithIdentifier("InformationPostingViewController")
+            self.presentViewController(informationPostViewController, animated: true, completion: nil)
+        }
+        
+        /* Prepare the cancel for the alert */
+        let cancelAction = UIAlertAction(title: "Cancel", style: .Default) {(action) in
+            self.dismissViewControllerAnimated(true, completion: nil)
+        }
+        
+        /* Configure the alert view to display the error */
+        let alert = UIAlertController(title: alertTitle, message: alertMessage, preferredStyle: .Alert)
+        alert.addAction(overWriteAction)
+        alert.addAction(cancelAction)
+        
+        dispatch_async(dispatch_get_main_queue(), {
+            self.presentViewController(alert, animated: true, completion: nil)
+        })
+    }
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+    //Function that configures and shows alert
+    func showAlert(alertTitle: String, alertMessage: String, actionTitle: String){
+        let alert = UIAlertController(title: alertTitle, message: alertMessage, preferredStyle: .Alert)
+        alert.addAction(UIAlertAction(title: actionTitle, style: .Default, handler: nil))
+        
+        self.presentViewController(alert, animated: true, completion: nil)
+    }
   }
