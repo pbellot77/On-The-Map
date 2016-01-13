@@ -75,7 +75,7 @@
                                     <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 </state>
                                 <connections>
-                                    <action selector="signUpButton:" destination="mDk-fY-hdq" eventType="touchUpInside" id="x9b-wf-hog"/>
+                                    <action selector="signUpButton:" destination="mDk-fY-hdq" eventType="touchUpInside" id="JNn-xQ-wb6"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -107,7 +107,7 @@
                         <outlet property="loginButton" destination="cFI-PR-A7T" id="UO4-MM-AdT"/>
                         <outlet property="mainView" destination="oFg-Pl-VC7" id="B1K-Jh-fNH"/>
                         <outlet property="passwordTextField" destination="qwF-K1-fE5" id="hd8-84-H8a"/>
-                        <outlet property="signUpButton" destination="xEF-AA-kUR" id="MNg-G5-dSw"/>
+                        <outlet property="signUpButton" destination="xEF-AA-kUR" id="dAg-hN-Bhx"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="UeS-7k-omx" userLabel="First Responder" sceneMemberID="firstResponder"/>
