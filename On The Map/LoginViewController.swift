@@ -92,7 +92,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
                 
                 // Display the tabbed view controller
                 let tabViewController = self.storyboard!.instantiateViewControllerWithIdentifier("TabBarController")
-                self.navigationController?.pushViewController(tabViewController, animated: true)
+                self.presentViewController(tabViewController, animated: true, completion: nil)
                 
                 //Stop animating the spinner and enable buttons
                 self.enableButtons(sender)

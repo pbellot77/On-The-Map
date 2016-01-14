@@ -22,7 +22,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         super.viewDidLoad()
         
         appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        setupMapViewConstraints()
+        
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -30,11 +30,6 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         setupNavigationBar()
         getStudentData()
         getUserData()
-    }
-    
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        setupMapViewConstraints()
     }
     
     //Function that presents the Information Posting View Controller
@@ -190,21 +185,6 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     
     //MARK: -- User interface helper functions
     
-    //Function that configures the map view constraints
-    func setupMapViewConstraints(){
-        
-        /* Setup the top constraint */
-        var mapViewConstraint = NSLayoutConstraint(item: mapView, attribute: .Top, relatedBy: .Equal, toItem: view, attribute: .Top, multiplier: 1, constant: CGRectGetHeight(navigationController!.navigationBar.frame))
-        
-        view.addConstraint(mapViewConstraint)
-        
-        /* Setup the bottom constraint */
-        let tabBarHeight = CGRectGetHeight(tabBarController!.tabBar.frame)
-        
-        mapViewConstraint = NSLayoutConstraint(item: mapView, attribute: .Bottom, relatedBy: .Equal, toItem: view, attribute: .Bottom, multiplier: 1, constant: -tabBarHeight)
-        
-        view.addConstraint(mapViewConstraint)
-    }
     
     //Fuction that configures the navigation bar
     func setupNavigationBar(){
