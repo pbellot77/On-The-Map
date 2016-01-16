@@ -142,9 +142,9 @@ class InformationPostingViewController: UIViewController, UITextFieldDelegate, M
             
                 guard error == nil else {
                     
-                    _ = "Couldn't submit your location"
-                    _ = "There was an error while trying to post your location to the server."
-                    _ = "Try again"
+                    let alertTitle = "Couldn't submit your location"
+                    let alertMessage = "There was an error while trying to post your location to the server."
+                    let actionTitle = "Try again"
                     
                     dispatch_async(dispatch_get_main_queue(), {
                         self.dismissViewControllerAnimated(true, completion: nil)
