@@ -22,7 +22,6 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         super.viewDidLoad()
         
         appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -31,6 +30,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         getStudentData()
         getUserData()
     }
+    
     
     //Function that presents the Information Posting View Controller
     func presentInformationPostingViewController(){
@@ -191,10 +191,10 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         
         /*Set the back button on the navigation bar to be logged out */
         let customLeftBarButton = UIBarButtonItem(title: "Log Out", style: .Plain, target: self, action: "logOut")
-        tabBarController!.navigationItem.setLeftBarButtonItem(customLeftBarButton, animated: false)
+        navigationItem.setLeftBarButtonItem(customLeftBarButton, animated: false)
         
         /* Set the title of the navigation bar to be On The Map */
-        tabBarController!.navigationItem.title = "On The Map"
+        self.navigationItem.title = "On The Map"
         
         /* Create an array of bar button items */
         var customButtons = [UIBarButtonItem]()
@@ -211,7 +211,8 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         customButtons.append(pinButton)
         
         /* Add buttons to nav bar */
-        tabBarController!.navigationItem.setRightBarButtonItems(customButtons, animated: false)
+        navigationItem.setRightBarButtonItems(customButtons, animated: false)
+        
     }
     
     //MARK: -- Map delegate helper functions

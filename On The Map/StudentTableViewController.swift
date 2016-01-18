@@ -96,7 +96,7 @@ class StudentTableViewController: UITableViewController {
         
         /* Set the back button on the navigation bar to be log out */
         let customLeftBarButton = UIBarButtonItem(title: "Log out", style: .Plain, target: mapViewController, action: "logOut")
-        tabBarController!.navigationItem.setLeftBarButtonItem(customLeftBarButton, animated: false)
+        navigationItem.setLeftBarButtonItem(customLeftBarButton, animated: false)
         
         /* Create an array of bar button items */
         var customButtons = [UIBarButtonItem]()
@@ -113,7 +113,7 @@ class StudentTableViewController: UITableViewController {
         customButtons.append(pinButton)
         
         /* Add the buttons to the nav bar */
-        tabBarController!.navigationItem.setRightBarButtonItems(customButtons, animated: false)
+        navigationItem.setRightBarButtonItems(customButtons, animated: false)
     }
     
     //Function that returns styled text from a unstyled string
