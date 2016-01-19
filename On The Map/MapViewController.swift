@@ -57,7 +57,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         }
     }
     
-    //Function that is called when the loout button is pressed
+    //Function that is called when the logout button is pressed
     func logOut() {
         UdacityClient.sharedInstance().deleteSession() {(result, error) in
             

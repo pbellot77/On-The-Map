@@ -209,22 +209,22 @@ class InformationPostingViewController: UIViewController, UITextFieldDelegate, M
     
     func changeUserInterface(){
         
-        self.cancelButton.titleLabel?.textColor = UIColor.whiteColor()
-        self.changeAlphaFor([self.cancelButton], alpha: 1.0)
+        cancelButton.titleLabel?.textColor = UIColor.whiteColor()
+        changeAlphaFor([self.cancelButton], alpha: 1.0)
         
-        self.studyingLabel.hidden = true
-        self.locationPromptView.hidden = true
-        self.findOnTheMapButton.hidden = true
+        studyingLabel.hidden = true
+        locationPromptView.hidden = true
+        findOnTheMapButton.hidden = true
         
-        self.configurePlaceholderText("Enter a link to share here", textField: self.urlTextField)
-        self.urlTextField.hidden = true
+        configurePlaceholderText("Enter a link to share here", textField: self.urlTextField)
+        urlTextField.hidden = true
         
-        self.submitButton.hidden = false
-        self.roundButtonCorner(self.submitButton)
+        submitButton.hidden = false
+        roundButtonCorner(self.submitButton)
         
-        self.mapView.hidden = false
+        mapView.hidden = false
         
-        self.view.backgroundColor = UIColor(red: 65.0/255.0, green: 117.0/255.0, blue: 164.0/255.0, alpha: 1)
+        view.backgroundColor = UIColor(red: 65.0/255.0, green: 117.0/255.0, blue: 164.0/255.0, alpha: 1)
     }
     
     func configureMap(){
