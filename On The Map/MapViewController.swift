@@ -266,8 +266,8 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         /* Prepare to overwrite for the alert */
         let overWriteAction = UIAlertAction(title: "Overwrite", style: .Default) {(action) in
             /* instantiate and then present the view controller */
-            let informationPostViewController = self.storyboard!.instantiateViewControllerWithIdentifier("InformationPostingViewController")
-            self.presentViewController(informationPostViewController, animated: true, completion: nil)
+            let informationPostingViewController = self.storyboard!.instantiateViewControllerWithIdentifier("InformationPostingViewController")
+            self.presentViewController(informationPostingViewController, animated: true, completion: nil)
         }
         
         /* Prepare the cancel for the alert */

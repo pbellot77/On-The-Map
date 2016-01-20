@@ -159,7 +159,7 @@
                     </view>
                     <navigationItem key="navigationItem" id="rWH-yh-Wv7"/>
                     <connections>
-                        <outlet property="mapView" destination="fsD-li-yct" id="eMz-sb-XJX"/>
+                        <outlet property="mapView" destination="fsD-li-yct" id="CQG-rE-47a"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="rGx-nq-V1k" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -214,7 +214,7 @@
         <!--Information Posting View Controller-->
         <scene sceneID="dgE-7e-H4H">
             <objects>
-                <viewController id="U8D-c7-Ce1" customClass="InformationPostingViewController" customModule="On_The_Map" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="InformationPostingViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="U8D-c7-Ce1" customClass="InformationPostingViewController" customModule="On_The_Map" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="QW9-Zi-IRl"/>
                         <viewControllerLayoutGuide type="bottom" id="C2z-BZ-dvn"/>
@@ -223,9 +223,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="7aB-hB-Lf5">
-                                <rect key="frame" x="0.0" y="165" width="600" height="348"/>
-                            </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Where are you studying today?" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SZD-Fj-7cD">
                                 <rect key="frame" x="182" y="64" width="237" height="93"/>
                                 <constraints>
@@ -266,14 +263,17 @@
                                     <action selector="findOnTheMap:" destination="U8D-c7-Ce1" eventType="touchUpInside" id="chM-ht-Tsq"/>
                                 </connections>
                             </button>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="aT4-MK-Erj">
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="elQ-ve-Kw4">
+                                <rect key="frame" x="0.0" y="165" width="600" height="348"/>
+                            </mapView>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="7aB-hB-Lf5">
+                                <rect key="frame" x="0.0" y="165" width="600" height="348"/>
+                            </imageView>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" clearsOnBeginEditing="YES" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="aT4-MK-Erj">
                                 <rect key="frame" x="20" y="165" width="560" height="30"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
-                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="elQ-ve-Kw4">
-                                <rect key="frame" x="0.0" y="165" width="600" height="348"/>
-                            </mapView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
@@ -294,6 +294,7 @@
                             <constraint firstItem="aT4-MK-Erj" firstAttribute="trailing" secondItem="BhP-6f-W8d" secondAttribute="trailing" id="j0y-WG-au9"/>
                             <constraint firstItem="elQ-ve-Kw4" firstAttribute="top" secondItem="7aB-hB-Lf5" secondAttribute="top" id="j8p-bA-qwF"/>
                             <constraint firstItem="elQ-ve-Kw4" firstAttribute="trailing" secondItem="7aB-hB-Lf5" secondAttribute="trailing" id="kqd-uX-JGw"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="vqw-FE-Nqh" secondAttribute="trailing" constant="168" id="nhH-F4-Xx5"/>
                             <constraint firstItem="BhP-6f-W8d" firstAttribute="baseline" secondItem="I5w-5K-i6i" secondAttribute="baseline" id="qQn-Hc-V6Q"/>
                             <constraint firstItem="elQ-ve-Kw4" firstAttribute="leading" secondItem="udC-yQ-7kz" secondAttribute="leading" id="sx1-0O-WOx"/>
                         </constraints>
