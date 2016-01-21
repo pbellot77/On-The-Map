@@ -32,6 +32,25 @@ class StudentTableViewController: UITableViewController {
     
     //MARK: - Helper functions
     
+    //Function to logout
+    func logOut() {
+        UdacityClient.sharedInstance().deleteSession() {(result, error) in
+            
+            guard error == nil else {
+                let alertTitle = "Couldn't log out!"
+                let alertMessage = error?.userInfo[NSLocalizedDescriptionKey] as? String
+                
+                dispatch_async(dispatch_get_main_queue(), {
+                    self.showAlert(alertTitle, errorString: alertMessage!)
+                })
+                return
+            }
+        }
+        
+        /* Show the log in view controller */
+        tabBarController?.dismissViewControllerAnimated(true, completion: nil)
+    }
+    
     //Function that fetches the student data for the table
     func getStudentData(){
         
@@ -92,10 +111,10 @@ class StudentTableViewController: UITableViewController {
     
     //Function that configures the navigation bar
     func setupNavigationBar() {
-        let mapViewController = tabBarController?.viewControllers![0]
+        let tableViewController = tabBarController?.viewControllers![1]
         
         /* Set the back button on the navigation bar to be log out */
-        let customLeftBarButton = UIBarButtonItem(title: "Log out", style: .Plain, target: mapViewController, action: "logOut")
+        let customLeftBarButton = UIBarButtonItem(title: "Log out", style: .Plain, target: tableViewController, action: "logOut")
         navigationItem.setLeftBarButtonItem(customLeftBarButton, animated: false)
         
         /* Create an array of bar button items */
@@ -103,7 +122,7 @@ class StudentTableViewController: UITableViewController {
         
         /* Create pin button */
         let pinImage = UIImage(named: "pin")
-        let pinButton = UIBarButtonItem(image: pinImage, style: .Plain, target: mapViewController, action: "presentInformationPostingViewController")
+        let pinButton = UIBarButtonItem(image: pinImage, style: .Plain, target: tableViewController, action: "presentInformationPostingViewController")
         
         /* Create refresh button */
         let refreshButton = UIBarButtonItem(barButtonSystemItem: .Refresh, target: self, action: "getStudentData")

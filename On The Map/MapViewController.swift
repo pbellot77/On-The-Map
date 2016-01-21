@@ -74,7 +74,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         }
         
         /* Show the log in view controller */
-        navigationController!.popToRootViewControllerAnimated(true)
+        tabBarController?.dismissViewControllerAnimated(true, completion: nil)
     }
     
     //MARK: -- Helper functions
