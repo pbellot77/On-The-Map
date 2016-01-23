@@ -51,6 +51,12 @@ class StudentTableViewController: UITableViewController {
         tabBarController?.dismissViewControllerAnimated(true, completion: nil)
     }
     
+    //Function to transition to student tableview controller
+    func presentInformationPostingViewController(){
+        let viewController = self.storyboard?.instantiateViewControllerWithIdentifier("InformationPostingViewController") as! InformationPostingViewController
+        self.presentViewController(viewController, animated: true, completion: nil)
+    }
+    
     //Function that fetches the student data for the table
     func getStudentData(){
         
@@ -111,10 +117,10 @@ class StudentTableViewController: UITableViewController {
     
     //Function that configures the navigation bar
     func setupNavigationBar() {
-        let tableViewController = tabBarController?.viewControllers![1]
+        tabBarController?.viewControllers![1]
         
         /* Set the back button on the navigation bar to be log out */
-        let customLeftBarButton = UIBarButtonItem(title: "Log out", style: .Plain, target: tableViewController, action: "logOut")
+        let customLeftBarButton = UIBarButtonItem(title: "Log Out", style: .Plain, target: self, action: "logOut")
         navigationItem.setLeftBarButtonItem(customLeftBarButton, animated: false)
         
         /* Create an array of bar button items */
@@ -122,7 +128,7 @@ class StudentTableViewController: UITableViewController {
         
         /* Create pin button */
         let pinImage = UIImage(named: "pin")
-        let pinButton = UIBarButtonItem(image: pinImage, style: .Plain, target: tableViewController, action: "presentInformationPostingViewController")
+        let pinButton = UIBarButtonItem(image: pinImage, style: .Plain, target: self, action: "presentInformationPostingViewController")
         
         /* Create refresh button */
         let refreshButton = UIBarButtonItem(barButtonSystemItem: .Refresh, target: self, action: "getStudentData")
@@ -187,10 +193,10 @@ class StudentTableViewController: UITableViewController {
         let app = UIApplication.sharedApplication()
         
         if let cell = tableView.cellForRowAtIndexPath(indexPath){
-            if let toOpen = cell.detailTextLabel?.text {
+            if let toOpen = cell.detailTextLabel?.text, url = NSURL(string: toOpen) where app.canOpenURL(url) {
                 if UIApplication.sharedApplication().canOpenURL(NSURL(string: toOpen)!){
-                    let url = NSURL(string: toOpen)
-                    app.openURL(url!)
+                    app.openURL(url)
+                    print("Url should have opened")
                 } else {
                     showAlert("Unable to load webpage", errorString: "Webpage couldn't be opened because the link was invalid.")
                 }

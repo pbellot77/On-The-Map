@@ -217,7 +217,7 @@ class InformationPostingViewController: UIViewController, UITextFieldDelegate, M
         findOnTheMapButton.hidden = true
         
         configurePlaceholderText("Enter a link to share here", textField: self.urlTextField)
-        urlTextField.hidden = true
+        urlTextField.hidden = false
         
         submitButton.hidden = false
         roundButtonCorner(self.submitButton)
