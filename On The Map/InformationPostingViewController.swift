@@ -147,6 +147,7 @@ class InformationPostingViewController: UIViewController, UITextFieldDelegate, M
                     let actionTitle = "Try again"
                     
                     dispatch_async(dispatch_get_main_queue(), {
+                        self.showAlert(alertTitle, alertMessage: alertMessage, actionTitle: actionTitle)
                         self.dismissViewControllerAnimated(true, completion: nil)
                     })
                     return
