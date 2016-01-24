@@ -22,6 +22,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         super.viewDidLoad()
         
         appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        mapView.delegate = self
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -240,15 +241,12 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         if control == view.rightCalloutAccessoryView{
             let app = UIApplication.sharedApplication()
             if let toOpen = view.annotation?.subtitle! {
-                if UIApplication.sharedApplication().canOpenURL(NSURL(string: toOpen)!) {
-                    let url = NSURL(string: toOpen)
-                    app.openURL(url!)
-                } else {
-                    let alertTitle = "Unable to load webpage"
-                    let alertMessage = "Webpage couldn't be opened because the link was invalid."
-                    let actionTitle = "Try Again"
-                    
-                    showAlert(alertTitle, alertMessage: alertMessage, actionTitle: actionTitle)
+                let isValidURL = app.openURL(NSURL(string: toOpen)!)
+                
+                if !isValidURL {
+                    let alert = UIAlertController(title: "Error", message: "Invalid URL", preferredStyle: UIAlertControllerStyle.Alert)
+                    alert.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.Default, handler: nil))
+                    self.presentViewController(alert, animated: true, completion: nil)
                 }
             }
         }

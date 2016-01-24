@@ -149,6 +149,7 @@ class InformationPostingViewController: UIViewController, UITextFieldDelegate, M
                     dispatch_async(dispatch_get_main_queue(), {
                         self.showAlert(alertTitle, alertMessage: alertMessage, actionTitle: actionTitle)
                         self.dismissViewControllerAnimated(true, completion: nil)
+                        self.cancelButton.hidden = false
                     })
                     return
                 }
