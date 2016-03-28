@@ -191,7 +191,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     func setupNavigationBar(){
         
         /*Set the back button on the navigation bar to be logged out */
-        let customLeftBarButton = UIBarButtonItem(title: "Log Out", style: .Plain, target: self, action: "logOut")
+        let customLeftBarButton = UIBarButtonItem(title: "Log Out", style: .Plain, target: self, action: #selector(MapViewController.logOut))
         navigationItem.setLeftBarButtonItem(customLeftBarButton, animated: false)
         
         /* Set the title of the navigation bar to be On The Map */
@@ -202,10 +202,10 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         
         /* Create pin button */
         let pinImage = UIImage(named: "pin")
-        let pinButton = UIBarButtonItem(image: pinImage, style: .Plain, target: self, action: "presentInformationPostingViewController")
+        let pinButton = UIBarButtonItem(image: pinImage, style: .Plain, target: self, action: #selector(MapViewController.presentInformationPostingViewController))
         
         /* create refresh button */
-        let refreshButton = UIBarButtonItem(barButtonSystemItem: .Refresh, target: self, action: "getStudentData")
+        let refreshButton = UIBarButtonItem(barButtonSystemItem: .Refresh, target: self, action: #selector(MapViewController.getStudentData))
         
         /* Add the buttons to the array */
         customButtons.append(refreshButton)
