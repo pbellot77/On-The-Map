@@ -177,16 +177,15 @@ class VTClient: NSObject {
     
     
     //Given raw JSON, return a useable Foundation object
-    class func parseJSONWithCompletionHandler(data: NSData, completionHandler: (result: AnyObject!, error: NSError?) -> Void){
+    class func parseJSONWithCompletionHandler(data: NSData) -> AnyObject? {
         
         var parsedResult: AnyObject!
         do {
             parsedResult = try NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.AllowFragments)
         } catch {
-            let userInfo = [NSLocalizedDescriptionKey: "Could not parse the data as JSON: '\(data)'"]
-            completionHandler(result: nil, error: NSError(domain: "parseJSONWithCompletionHandler", code: 1, userInfo: userInfo))
+            parsedResult = nil
         }
-        completionHandler(result: parsedResult, error: nil)
+        return parsedResult
     }
     
     //Mark -- Share Instance
